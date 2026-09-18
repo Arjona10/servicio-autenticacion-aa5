@@ -1,0 +1,136 @@
+{
+  "info": {
+    "name": "AA5-EV01 Servicio de autenticacion (SENA ADSO)",
+    "description": "Coleccion de pruebas del servicio web de registro e inicio de sesion. Evidencia GA7-220501096-AA5-EV01 - Aldemar Garcia Rodriguez. Importar en Postman con Import > File.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "url_base", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "0. Estado del servicio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{url_base}}/api", "host": ["{{url_base}}"], "path": ["api"] },
+        "description": "Verifica que el servicio web se encuentre activo."
+      }
+    },
+    {
+      "name": "1. Registro de usuario",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"aldemar\",\n  \"correo\": \"aldemar@ejemplo.com\",\n  \"contrasena\": \"Sena2026*\"\n}"
+        },
+        "url": { "raw": "{{url_base}}/api/registro", "host": ["{{url_base}}"], "path": ["api", "registro"] },
+        "description": "Crea la cuenta. Respuesta esperada: HTTP 201 con el mensaje 'Usuario registrado satisfactoriamente'."
+      }
+    },
+    {
+      "name": "2. Login correcto",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Guarda el token devuelto en la variable de coleccion para las rutas protegidas",
+              "var cuerpo = pm.response.json();",
+              "if (cuerpo.token) { pm.collectionVariables.set('token', cuerpo.token); }",
+              "pm.test('Autenticacion satisfactoria', function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(cuerpo.exito).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"aldemar\",\n  \"contrasena\": \"Sena2026*\"\n}"
+        },
+        "url": { "raw": "{{url_base}}/api/login", "host": ["{{url_base}}"], "path": ["api", "login"] },
+        "description": "Credenciales validas. Respuesta esperada: HTTP 200 con el mensaje 'Autenticacion satisfactoria'."
+      }
+    },
+    {
+      "name": "3. Login con contrasena incorrecta",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Error en la autenticacion', function () {",
+              "    pm.response.to.have.status(401);",
+              "    pm.expect(pm.response.json().exito).to.eql(false);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"aldemar\",\n  \"contrasena\": \"claveErrada123\"\n}"
+        },
+        "url": { "raw": "{{url_base}}/api/login", "host": ["{{url_base}}"], "path": ["api", "login"] },
+        "description": "Credenciales invalidas. Respuesta esperada: HTTP 401 con 'Error en la autenticacion'."
+      }
+    },
+    {
+      "name": "4. Login de usuario inexistente",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"noexiste\",\n  \"contrasena\": \"Sena2026*\"\n}"
+        },
+        "url": { "raw": "{{url_base}}/api/login", "host": ["{{url_base}}"], "path": ["api", "login"] },
+        "description": "Usuario no registrado. Respuesta esperada: HTTP 401."
+      }
+    },
+    {
+      "name": "5. Registro con datos invalidos",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"ab\",\n  \"contrasena\": \"123\"\n}"
+        },
+        "url": { "raw": "{{url_base}}/api/registro", "host": ["{{url_base}}"], "path": ["api", "registro"] },
+        "description": "Valida el middleware de validacion. Respuesta esperada: HTTP 400."
+      }
+    },
+    {
+      "name": "6. Perfil (ruta protegida con token)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": { "raw": "{{url_base}}/api/perfil", "host": ["{{url_base}}"], "path": ["api", "perfil"] },
+        "description": "Usa el token guardado por la peticion 2. Respuesta esperada: HTTP 200."
+      }
+    },
+    {
+      "name": "7. Usuarios registrados (ruta protegida)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": { "raw": "{{url_base}}/api/usuarios", "host": ["{{url_base}}"], "path": ["api", "usuarios"] },
+        "description": "Lista los usuarios registrados sin mostrar las contrasenas."
+      }
+    }
+  ]
+}
