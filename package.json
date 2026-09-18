@@ -1,0 +1,32 @@
+{
+  "name": "servicio-autenticacion",
+  "version": "1.0.0",
+  "description": "Servicio web REST de registro e inicio de sesion de usuarios - Evidencia GA7-220501096-AA5-EV01 (SENA - ADSO)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "node pruebas/pruebas.js"
+  },
+  "keywords": [
+    "api-rest",
+    "express",
+    "mongodb",
+    "autenticacion",
+    "sena",
+    "adso"
+  ],
+  "author": "Aldemar Garcia Rodriguez",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

@@ -1,0 +1,13 @@
+# Dependencias instaladas por npm (se reconstruyen con "npm install")
+node_modules/
+
+# Variables de entorno con datos sensibles (cadena de conexion, llave del token)
+.env
+
+# Archivo de la base de datos local que genera el modo "archivo"
+datos/usuarios.json
+
+# Registros y archivos temporales del sistema operativo
+*.log
+.DS_Store
+Thumbs.db
