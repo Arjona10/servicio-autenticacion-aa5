@@ -24,6 +24,14 @@ module.exports = {
   // Cadena de conexion a la base de datos MongoDB (Atlas o instalacion local)
   mongodbUri: process.env.MONGODB_URI || '',
 
+  // Servidores DNS que debe usar Node para resolver el registro SRV de Atlas.
+  // Se definen separados por comas (ejemplo: 8.8.8.8,1.1.1.1). Si queda vacio,
+  // se conserva el resolutor que tenga configurado el sistema operativo.
+  dnsServidores: (process.env.DNS_SERVIDORES || '')
+    .split(',')
+    .map((servidor) => servidor.trim())
+    .filter((servidor) => servidor.length > 0),
+
   // Llave secreta con la que se firma el token JWT que se entrega al iniciar sesion
   jwtSecreto: process.env.JWT_SECRETO || 'clave_secreta_solo_para_desarrollo_AA5',
 

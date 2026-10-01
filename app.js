@@ -41,7 +41,22 @@ app.use((req, res, next) => {
   next(); // continua con el siguiente middleware o ruta
 });
 
-// --- 4. Rutas del servicio -----------------------------------------------------
+// --- 4. Rutas de las paginas del sitio -----------------------------------------
+// La raiz "/" la entrega express.static con public/index.html, que es la
+// interfaz principal de MI-BICI. Las dos rutas siguientes dan una direccion
+// limpia (sin la extension .html) a las demas paginas.
+
+/** Pantalla de inicio de sesion y registro. */
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+/** Panel de pruebas de la API (cliente web de la evidencia AA5-EV01). */
+app.get('/pruebas', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'pruebas.html'));
+});
+
+// --- 5. Rutas del servicio -----------------------------------------------------
 /**
  * Ruta de verificacion: confirma que el servicio se encuentra activo.
  */
@@ -62,11 +77,11 @@ app.get('/api', (req, res) => {
 // Se montan las rutas de registro e inicio de sesion bajo el prefijo /api
 app.use('/api', rutasAutenticacion);
 
-// --- 5. Manejo de errores (siempre al final) -----------------------------------
+// --- 6. Manejo de errores (siempre al final) -----------------------------------
 app.use(rutaNoEncontrada);  // 404 para rutas inexistentes
 app.use(manejadorErrores);  // 500 para errores no controlados
 
-// --- 6. Arranque del servidor --------------------------------------------------
+// --- 7. Arranque del servidor --------------------------------------------------
 /**
  * Conecta la base de datos y luego pone el servidor a escuchar.
  * Si se configuro MongoDB pero la conexion falla, se cambia automaticamente al

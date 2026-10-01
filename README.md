@@ -89,7 +89,7 @@ Para usar MongoDB Atlas, en `.env`:
 
 ```
 MOTOR_DATOS=mongo
-MONGODB_URI=mongodb+srv://usuario:clave@cluster0.xxxxx.mongodb.net/autenticacion
+MONGODB_URI=mongodb+srv://aldemargaro_db_user:f9G2NNzN9Q3fSDfg@cluster0.wwcrzaw.mongodb.net/?appName=Cluster0
 ```
 
 Si se configura MongoDB y la conexión falla, el servicio continúa operando con el archivo JSON para no interrumpir las pruebas.
@@ -205,7 +205,7 @@ git init
 git add .
 git commit -m "Estructura inicial del proyecto"
 git branch -M main
-git remote add origin https://github.com/USUARIO/servicio-autenticacion-aa5.git
+git remote add origin https://github.com/Arjona10/servicio-autenticacion-aa5.git
 git push -u origin main
 ```
 

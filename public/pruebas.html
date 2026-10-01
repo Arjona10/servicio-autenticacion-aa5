@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de pruebas de la API — AA5-EV01</title>
+  <!--
+    Cliente de prueba del servicio web, disponible en http://localhost:3000/pruebas
+    Permite ejecutar el registro y el inicio de sesión desde el navegador,
+    como complemento a las pruebas realizadas con Postman.
+    La interfaz principal del proyecto MI-BICI está en la raíz del sitio.
+  -->
+  <style>
+    :root {
+      --verde: #39a900;      /* color institucional SENA */
+      --verde-oscuro: #2d8200;
+      --gris: #f4f5f7;
+      --texto: #1f2430;
+      --borde: #d9dde3;
+      --error: #c0392b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--gris);
+      color: var(--texto);
+      padding: 24px 16px 48px;
+    }
+    header { max-width: 900px; margin: 0 auto 24px; }
+    h1 { font-size: 1.5rem; margin: 0 0 4px; }
+    header p { margin: 0; color: #5a6270; font-size: .95rem; }
+    .contenedor {
+      max-width: 900px; margin: 0 auto;
+      display: grid; gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .tarjeta {
+      background: #fff; border: 1px solid var(--borde);
+      border-radius: 10px; padding: 20px;
+    }
+    .tarjeta h2 {
+      font-size: 1.05rem; margin: 0 0 14px;
+      border-left: 4px solid var(--verde); padding-left: 10px;
+    }
+    label { display: block; font-size: .85rem; margin: 10px 0 4px; font-weight: 600; }
+    input {
+      width: 100%; padding: 9px 11px; border: 1px solid var(--borde);
+      border-radius: 6px; font-size: .95rem;
+    }
+    input:focus { outline: 2px solid var(--verde); border-color: transparent; }
+    button {
+      margin-top: 16px; width: 100%; padding: 10px;
+      background: var(--verde); color: #fff; border: 0; border-radius: 6px;
+      font-size: .95rem; font-weight: 600; cursor: pointer;
+    }
+    button:hover { background: var(--verde-oscuro); }
+    .respuesta {
+      max-width: 900px; margin: 22px auto 0;
+      background: #fff; border: 1px solid var(--borde); border-radius: 10px; padding: 20px;
+    }
+    .respuesta h2 { font-size: 1.05rem; margin: 0 0 12px; border-left: 4px solid var(--verde); padding-left: 10px; }
+    .estado { font-weight: 600; margin-bottom: 10px; }
+    .ok { color: var(--verde-oscuro); }
+    .fallo { color: var(--error); }
+    pre {
+      background: #1f2430; color: #e8eaed; padding: 14px;
+      border-radius: 6px; overflow-x: auto; font-size: .85rem; margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Panel de pruebas del servicio web</h1>
+    <p>Evidencia GA7-220501096-AA5-EV01 &middot; Aldemar García Rodríguez &middot; ADSO - SENA</p>
+    <p><a href="/">&larr; Volver a MI-BICI</a></p>
+  </header>
+
+  <div class="contenedor">
+    <!-- Formulario de registro: consume POST /api/registro -->
+    <section class="tarjeta">
+      <h2>1. Registro de usuario</h2>
+      <form id="formRegistro">
+        <label for="regUsuario">Usuario (mínimo 4 caracteres)</label>
+        <input id="regUsuario" name="usuario" required autocomplete="username" />
+
+        <label for="regCorreo">Correo (opcional)</label>
+        <input id="regCorreo" name="correo" type="email" autocomplete="email" />
+
+        <label for="regContrasena">Contraseña (mínimo 6 caracteres)</label>
+        <input id="regContrasena" name="contrasena" type="password" required autocomplete="new-password" />
+
+        <button type="submit">Registrar</button>
+      </form>
+    </section>
+
+    <!-- Formulario de inicio de sesión: consume POST /api/login -->
+    <section class="tarjeta">
+      <h2>2. Inicio de sesión</h2>
+      <form id="formLogin">
+        <label for="logUsuario">Usuario</label>
+        <input id="logUsuario" name="usuario" required autocomplete="username" />
+
+        <label for="logContrasena">Contraseña</label>
+        <input id="logContrasena" name="contrasena" type="password" required autocomplete="current-password" />
+
+        <button type="submit">Iniciar sesión</button>
+      </form>
+    </section>
+  </div>
+
+  <!-- Área donde se muestra la respuesta JSON devuelta por el servicio -->
+  <section class="respuesta">
+    <h2>Respuesta del servicio</h2>
+    <p class="estado" id="estado">Sin peticiones todavía.</p>
+    <pre id="salida">{}</pre>
+  </section>
+
+  <script>
+    // Elementos donde se pinta el resultado de cada petición
+    const estado = document.getElementById('estado');
+    const salida = document.getElementById('salida');
+
+    /**
+     * Envía la petición al servicio web y muestra la respuesta en pantalla.
+     * @param {string} ruta  ruta de la API (por ejemplo /api/login)
+     * @param {Object} datos cuerpo de la petición en formato JSON
+     */
+    async function enviar(ruta, datos) {
+      estado.textContent = 'Enviando petición...';
+      estado.className = 'estado';
+      try {
+        const respuesta = await fetch(ruta, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos)
+        });
+        const cuerpo = await respuesta.json();
+
+        // Se indica el código HTTP y el mensaje devuelto por el servidor
+        estado.textContent = 'HTTP ' + respuesta.status + ' — ' + (cuerpo.mensaje || '');
+        estado.className = 'estado ' + (cuerpo.exito ? 'ok' : 'fallo');
+        salida.textContent = JSON.stringify(cuerpo, null, 2);
+      } catch (error) {
+        estado.textContent = 'No fue posible contactar el servicio: ' + error.message;
+        estado.className = 'estado fallo';
+      }
+    }
+
+    // Registro de usuario
+    document.getElementById('formRegistro').addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      enviar('/api/registro', {
+        usuario: regUsuario.value,
+        correo: regCorreo.value,
+        contrasena: regContrasena.value
+      });
+    });
+
+    // Inicio de sesión
+    document.getElementById('formLogin').addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      enviar('/api/login', {
+        usuario: logUsuario.value,
+        contrasena: logContrasena.value
+      });
+    });
+  </script>
+</body>
+</html>

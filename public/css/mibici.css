@@ -1,0 +1,288 @@
+/* =============================================================================
+   mibici.css
+   Hoja de estilos comun de MI-BICI.
+   Toda la paleta y las medidas se definen como variables de tema para poder
+   cambiar la apariencia desde un solo lugar.
+   ============================================================================= */
+
+:root {
+  /* Paleta */
+  --verde: #0f766e;
+  --verde-oscuro: #0b5952;
+  --verde-claro: #d6f2ee;
+  --ambar: #d97706;
+  --rojo: #c0392b;
+
+  /* Superficies y texto */
+  --fondo: #f3f6f6;
+  --superficie: #ffffff;
+  --borde: #dfe5e5;
+  --texto: #14201f;
+  --texto-suave: #5c6a69;
+
+  /* Medidas */
+  --radio: 14px;
+  --sombra: 0 1px 2px rgba(20, 32, 31, .06), 0 8px 24px rgba(20, 32, 31, .06);
+  --ancho: 1080px;
+  --fuente: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--fuente);
+  background: var(--fondo);
+  color: var(--texto);
+  line-height: 1.55;
+}
+
+/* Oculta la pagina hasta validar la sesion, para que no alcance a verse
+   el contenido antes de redirigir al login. */
+body.verificando { visibility: hidden; }
+
+a { color: var(--verde); }
+
+/* ------------------------------------------------------------------ Encabezado */
+.barra {
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borde);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.barra-interna {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -.02em;
+  color: var(--texto);
+  text-decoration: none;
+}
+
+.marca span.punto {
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  background: var(--verde);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+}
+
+.barra nav { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+
+.usuario {
+  font-size: .9rem;
+  color: var(--texto-suave);
+}
+.usuario strong { color: var(--texto); }
+
+/* ------------------------------------------------------------------- Contenido */
+.contenido {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+.titulo {
+  font-size: 1.9rem;
+  letter-spacing: -.02em;
+  margin: 0 0 6px;
+}
+
+.subtitulo {
+  color: var(--texto-suave);
+  margin: 0 0 28px;
+}
+
+.seccion-titulo {
+  font-size: 1.05rem;
+  margin: 34px 0 14px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--texto-suave);
+}
+
+/* ---------------------------------------------------------------------- Tarjetas */
+.rejilla {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 22px;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .15s ease, border-color .15s ease;
+}
+
+a.tarjeta:hover {
+  transform: translateY(-2px);
+  border-color: var(--verde);
+}
+
+.tarjeta .icono {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: var(--verde-claro);
+  color: var(--verde-oscuro);
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  margin-bottom: 4px;
+}
+
+.tarjeta h3 { margin: 0; font-size: 1.05rem; }
+.tarjeta p { margin: 0; color: var(--texto-suave); font-size: .92rem; }
+
+.etiqueta {
+  align-self: flex-start;
+  margin-top: 6px;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #f0f2f2;
+  color: var(--texto-suave);
+}
+
+/* ---------------------------------------------------------------------- Botones */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--verde);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.boton:hover { background: var(--verde-oscuro); }
+.boton.ancho { width: 100%; }
+
+.boton.secundario {
+  background: transparent;
+  color: var(--texto-suave);
+  border: 1px solid var(--borde);
+}
+.boton.secundario:hover { background: #eef1f1; color: var(--texto); }
+
+/* --------------------------------------------------------------- Formularios */
+.panel {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 28px;
+}
+
+label {
+  display: block;
+  font-size: .85rem;
+  font-weight: 600;
+  margin: 14px 0 5px;
+}
+
+input {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  font: inherit;
+  font-size: .95rem;
+  background: #fff;
+  color: var(--texto);
+}
+input:focus { outline: 2px solid var(--verde); border-color: transparent; }
+
+.ayuda { font-size: .8rem; color: var(--texto-suave); margin: 6px 0 0; }
+
+/* --------------------------------------------------------------- Pestañas */
+.pestanas {
+  display: flex;
+  gap: 4px;
+  background: #eef1f1;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+}
+
+.pestanas button {
+  flex: 1;
+  padding: 9px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  font-size: .92rem;
+  color: var(--texto-suave);
+  cursor: pointer;
+}
+.pestanas button.activa { background: var(--superficie); color: var(--texto); box-shadow: var(--sombra); }
+
+/* ----------------------------------------------------------------- Mensajes */
+.mensaje {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: .9rem;
+  display: none;
+}
+.mensaje.visible { display: block; }
+.mensaje.ok { background: var(--verde-claro); color: var(--verde-oscuro); }
+.mensaje.error { background: #fdecea; color: var(--rojo); }
+
+/* ---------------------------------------------------------------------- Varios */
+pre.json {
+  background: #14201f;
+  color: #e6ecea;
+  padding: 14px;
+  border-radius: 10px;
+  overflow-x: auto;
+  font-size: .85rem;
+  margin: 0;
+}
+
+.pie {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  color: var(--texto-suave);
+  font-size: .85rem;
+  border-top: 1px solid var(--borde);
+}
+
+@media (max-width: 560px) {
+  .titulo { font-size: 1.5rem; }
+  .barra-interna { flex-wrap: wrap; }
+  .usuario { width: 100%; order: 3; }
+}
